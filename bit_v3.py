@@ -45,7 +45,6 @@ def process_address():
     with open("new_file1.txt", "r") as file:
         local_addresses = file.readlines()
         local_addresses = [line.strip() for line in local_addresses]
-
     while not STOP_GENERATION.is_set():
         key_pairs = generate_key_pairs(10)  # 一次生成10个地址
         for private_key, address in key_pairs:
