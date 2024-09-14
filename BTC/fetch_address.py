@@ -33,8 +33,13 @@ def worker(start, end, target_address, queue):
         private_key = format(number, 'x').zfill(64)
         addr = generate_compressed_address(private_key)[1]
         if addr == target_address:
+            print(addr)
             queue.put((private_key, addr))
             break
+        elif "1YangA"  in addr :
+            print("找到靓号",private_key,addr)
+        elif "1XiongTing" in addr :
+            print("找到靓号",private_key,addr)
     end_time = time.time()
     print(f"Worker 任务执行时间: {end_time - start_time:.2f} 秒")
 
@@ -81,28 +86,65 @@ def main(config):
     addresses_per_minute = total_addresses_generated / elapsed_time_minutes
     print(f"每分钟生成的地址数量: {addresses_per_minute:.2f}")
 
+def loop_main(start = 71181701199800000000, end =   73786976294838206463,default_target_address = "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so",default_output_file = "balances.txt"
+):
+    default_start = start
+    while default_start < end:
+        default_end = default_start + 100000000
+        parser = argparse.ArgumentParser(description='Bitcoin 地址生成器')
+        parser.add_argument('--start', type=int, help='私钥范围的起始值')
+        parser.add_argument('--end', type=int, help='私钥范围的结束值')
+        parser.add_argument('--target_address', type=str, help='目标比特币地址')
+        parser.add_argument('--output_file', type=str, help='输出匹配结果的文件')
+        args = parser.parse_args()
+        config = Config(
+            start=args.start if args.start is not None else default_start,
+            end=args.end if args.end is not None else default_end,
+            target_address=args.target_address if args.target_address is not None else default_target_address,
+            output_file=args.output_file if args.output_file is not None else default_output_file
+        )
+        main(config)
+
+        if default_end > end:
+            break
+        # print(f"a: {default_start}, b: {default_end}")
+        default_start = default_end  # 更新a为当前b的值
+
+
+
+
+# 使用示例
+
 if __name__ == "__main__":
     # 设置默认参数
-    default_start = 71181701182501000000
-    default_end =   71181701182502000000
-    default_target_address = "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so"
-    default_output_file = "balances.txt"
+    # default_start = 71181701195800000000
+    # default_end =   73786976294838206463
 
-    parser = argparse.ArgumentParser(description='Bitcoin 地址生成器')
-    parser.add_argument('--start', type=int, help='私钥范围的起始值')
-    parser.add_argument('--end', type=int, help='私钥范围的结束值')
-    parser.add_argument('--target_address', type=str, help='目标比特币地址')
-    parser.add_argument('--output_file', type=str, help='输出匹配结果的文件')
+    # for i in (default_start,default_end):
+    #
+    # default_target_address = "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so"
+    # default_output_file = "balances.txt"
+    #
+    # parser = argparse.ArgumentParser(description='Bitcoin 地址生成器')
+    # parser.add_argument('--start', type=int, help='私钥范围的起始值')
+    # parser.add_argument('--end', type=int, help='私钥范围的结束值')
+    # parser.add_argument('--target_address', type=str, help='目标比特币地址')
+    # parser.add_argument('--output_file', type=str, help='输出匹配结果的文件')
+    #
+    # args = parser.parse_args()
+    #
+    # # 使用命令行参数，如果未提供则使用默认值
+    # config = Config(
+    #     start=args.start if args.start is not None else default_start,
+    #     end=args.end if args.end is not None else default_end,
+    #     target_address=args.target_address if args.target_address is not None else default_target_address,
+    #     output_file=args.output_file if args.output_file is not None else default_output_file
+    # )
+    #
+    # # 调用 main 函数并传入参数
+    # main(config)
+    loop_main()
 
-    args = parser.parse_args()
-
-    # 使用命令行参数，如果未提供则使用默认值
-    config = Config(
-        start=args.start if args.start is not None else default_start,
-        end=args.end if args.end is not None else default_end,
-        target_address=args.target_address if args.target_address is not None else default_target_address,
-        output_file=args.output_file if args.output_file is not None else default_output_file
-    )
-
-    # 调用 main 函数并传入参数
-    main(config)
+# ./vanitygen++ -F compressed -Z 0000000000000000000000000000000000000000000073786976294838206463 -l $((256-67)) 1BY8GQbnueYofwSuFAT3US
+# 13zb1hQbWVsc2S7ZTZnP2G
+# BY8GQbnueYofwSuFAT3USA

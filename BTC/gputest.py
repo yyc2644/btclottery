@@ -8,7 +8,7 @@ from bitcoin import privkey_to_pubkey, pubkey_to_address,compress
 
 # 设置设备为 MPS（适用于 M1/M2 芯片），如果没有 MPS 后端可用，则使用 CPU
 device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
-print(device
+print(device)
 
 # 生成压缩地址的方法
 def generate_compressed_address(private_key):
